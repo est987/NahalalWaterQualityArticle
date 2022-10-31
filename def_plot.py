@@ -128,8 +128,16 @@ def heatmap_meangrop_id(meangrop_df,save_plot):
 def label_point(x, y, val, ax):
     a = pd.concat({'x': x, 'y': y, 'val': val}, axis=1)
     for i, point in a.iterrows():
-        ax.text(point['x']+.02, point['y'], str(point['val']),fontsize=15)
-
+        
+      
+        if  str(point['val'])=='12.0':
+          
+            ax.text(point['x']+50, point['y']-4, str(point['val']),fontsize=15)
+        elif  str(point['val'])=='13.0':   
+            ax.text(point['x']+50, point['y']+4, str(point['val']),fontsize=15)
+            
+        else:
+            ax.text(point['x']+50, point['y']-1, str(point['val']),fontsize=15)
 
 def distance_elevation(measurement_data,save_plot):
     measurement_data=measurement_data.sort_values(by='id')
@@ -171,7 +179,7 @@ def distance_elevation(measurement_data,save_plot):
 
     label='Upstream' 
     ax.annotate(label, # this is the text
-    (2,4000), # this is the point to label
+    (2,5000), # this is the point to label
     textcoords="offset points", # how to position the text
     xytext=(0,0), # distance from text to points (x,y)
     ha='center',# horizontal alignment can be left, right or center 
@@ -179,7 +187,7 @@ def distance_elevation(measurement_data,save_plot):
     color='red') 
     label='Middlestream'
     ax.annotate(label, # this is the text
-    (7,6000), # this is the point to label
+    (7,5000), # this is the point to label
     textcoords="offset points", # how to position the text
     xytext=(0,0), # distance from text to points (x,y)
     ha='center',# horizontal alignment can be left, right or center 
@@ -187,7 +195,7 @@ def distance_elevation(measurement_data,save_plot):
     color='red') 
     label='Downstream'
     ax.annotate(label, # this is the text
-    (12,4000), # this is the point to label
+    (12,5000), # this is the point to label
     textcoords="offset points", # how to position the text
     xytext=(0,0), # distance from text to points (x,y)
     ha='center',# horizontal alignment can be left, right or center 
@@ -470,11 +478,12 @@ def grop_plot(grop_data,poll_list,grop_poll_list,save_plot):
          grop_mean= grop_mean.loc[ grop_mean['spi_grop']!='wet2dry5',:]
          
          # line plot  
-         fig,ax= plt.subplots(figsize=(52,22))
-         sns.lineplot(x='id_grop', y=poll,hue="spi_grop", data=grop_mean, estimator=None,linewidth=15,ax=ax)
-         ax.set_xlabel('id grop',size=30)
+         palette=['blue','orange','yellow','red']
+         fig,ax= plt.subplots(figsize=(52,22)) #"Set2"
+         sns.lineplot(x='id_grop', y=poll,hue="spi_grop", data=grop_mean,palette=palette, estimator=None,linewidth=15,ax=ax)
+         ax.set_xlabel('id grop',size=50)
          yLabel_unit=yLabel(poll)
-         ax.set_ylabel(yLabel_unit,size=30)
+         ax.set_ylabel(yLabel_unit,size=50)
          ax.tick_params(axis='both', which='major', labelsize=40)
          ax.tick_params(axis='both', which='minor', labelsize=35) 
          ax.legend(title="", fontsize=40, title_fontsize=15)

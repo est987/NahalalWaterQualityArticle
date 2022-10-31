@@ -3,13 +3,13 @@ import pandas as pd,numpy as np #geopandas as gpd,
 
 
 # import the fun to crete the plot 
-fp='C:/Users/matanb/OneDrive - ARO Volcani Center/Water Quality Measurements nahalal/gethub_poject'
+fp='//fs01/users/matanb/GitHub/NahalalWaterQualityArticle'
 os.chdir(fp)
 from def_plot import *
 
 
 ################   get the data  #################
-folder = 'C:/Users/matanb/OneDrive - ARO Volcani Center/Water Quality Measurements nahalal/gethub_poject/data/'
+folder ='//fs01/users/matanb/GitHub/NahalalWaterQualityArticle/data' 
 df = pd.read_csv(os.path.join(folder,'final_df.csv'), parse_dates=['sample_date'])
 point_measurement_data= pd.read_csv(os.path.join(folder,'point_measurement_data.csv'))
 rain_data=pd.read_excel(os.path.join(folder,'rain_data.xlsx'), sheet_name='rain')
@@ -86,7 +86,7 @@ poll_data_join_rain_celect_columns.insert(3, 'grop',grop_3)
 
 #%%
 #save plot folder 
-savefolder = 'C:/Users/matanb/OneDrive - ARO Volcani Center/Water Quality Measurements nahalal/gethub_poject/graphs'
+savefolder = '//fs01/users/matanb/GitHub/NahalalWaterQualityArticle/graphs/31102022'
 #%%
 #1
 a,b,c,d=grop_data_mean_id(Standard_norm_data_13, poll_list)
