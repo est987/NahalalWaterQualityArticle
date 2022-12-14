@@ -95,28 +95,27 @@ def yLabel(p):
     else:
         return '{} (mg/L)'.format(p) # concentration
 
-# heatmap id
 def heatmap_meangrop_id(meangrop_df,save_plot):
      cbar_kws={}
-     annot_kws={"size":30}
-     fig,ax= plt.subplots(figsize=(62,32))
+     annot_kws={"size":8}
+     fig,ax= plt.subplots(figsize=(8,6))
      cmap = sns.color_palette("rocket_r", as_cmap=True)
-     sns.heatmap(meangrop_df, annot=True,linewidths=.5,annot_kws=annot_kws,cbar_kws=cbar_kws,ax=ax, cmap=cmap) 
+     sns.heatmap(meangrop_df, annot=True,linewidths=.5,cbar_kws=cbar_kws,ax=ax, cmap=cmap, annot_kws=annot_kws)
      
      cbar = ax.collections[0].colorbar
-     cbar.ax.set_ylim(-1.0,1.5)
+     cbar.ax.set_ylim(-1.2,1.5)
      cbar.ax.set_yticks(list(np.arange(-1.1,1.6,0.5)))
-     cbar.ax.tick_params(labelsize=50)
-     ax.tick_params(axis='x', labelrotation=0 ,which='major', labelsize=50)
-     ax.tick_params(axis='y', labelrotation=0 ,which='major', labelsize=50)
-     ax.tick_params(axis='both', which='minor', labelsize=50)
-     ax.set_xlabel('Sample id',size=50)
-     ax.set_ylabel('pollution',size=50)
+     #cbar.ax.tick_params(labelsize=50)
+     ax.tick_params(axis='x', labelrotation=0 ,which='major')#, labelsize=50)
+     ax.tick_params(axis='y', labelrotation=0 ,which='major')#, labelsize=50)
+     ax.tick_params(axis='both', which='minor')#, labelsize=50)
+     ax.set_xlabel('Sample ID')#,size=50)
+     ax.set_ylabel('Pollutant')#,size=50)
      
      
-     ax.tick_params(axis='both', which='minor', labelsize=50)
+     ax.tick_params(axis='both', which='minor')#, labelsize=50)
      create_new_folder(os.path.join(save_plot,'heatmap_meam_id'))
-     fig.savefig(os.path.join(save_plot,'heatmap_meam_id' ,'heatmap.png'))
+     fig.savefig(os.path.join(save_plot,'heatmap_meam_id' ,'heatmap.png'), bbox_inches='tight', dpi=300)
   
 
 
