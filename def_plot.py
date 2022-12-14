@@ -1,9 +1,10 @@
 import os 
 import datetime
-import pandas as pd,numpy as np #geopandas as gpd, 
+import pandas as pd,numpy as np #geopandas as gpd,
 from sklearn import preprocessing
 import seaborn as sns
 import matplotlib.pyplot as plt
+from pandas.api.types import CategoricalDtype
 from matplotlib.dates import DateFormatter
 import matplotlib.dates as mdates
 from matplotlib import rcParams, ticker
@@ -18,7 +19,7 @@ def add_columns_sum_rain_between_dates(poll_data,rain_data):
        tick_dates=tick_dates.assign(add_columns=add_columns)
        tick_dates=tick_dates.rename(columns={"add_columns":c})
 
-   #4 grop 
+   #4 group 
    g_list=list()
    for s2,s5 in zip(tick_dates['spi_2'],tick_dates['spi_5']):
       
@@ -37,7 +38,7 @@ def add_columns_sum_rain_between_dates(poll_data,rain_data):
        else:
            g=np.nan
        g_list.append(g) 
-   tick_dates=tick_dates.assign(spi_grop= g_list)
+   tick_dates=tick_dates.assign(spi_group= g_list)
    
    #nwe_hy  
    nwe_hy=[0]*34  
@@ -74,12 +75,12 @@ def TransformationData_fun(df,list_columns):
     return dict_TransformationData 
 
 
-def grop_data_mean_id(df, poll_list):
+def group_data_mean_id(df, poll_list):
     df_melt=pd.melt(df,id_vars=['id','sample_date'], value_vars= poll_list)
-    df_grop =  df_melt.groupby(['id','variable']).mean().reset_index()
-    df_pivot= df_grop.pivot(index='variable', columns='id', values='value')
+    df_group =  df_melt.groupby(['id','variable']).mean().reset_index()
+    df_pivot= df_group.pivot(index='variable', columns='id', values='value')
     df_pivot_reindex= df_pivot.reindex(poll_list)
-    return df_melt,  df_grop, df_pivot,df_pivot_reindex
+    return df_melt,  df_group, df_pivot,df_pivot_reindex
 
 
 #  fun to plot 
@@ -95,12 +96,12 @@ def yLabel(p):
     else:
         return '{} (mg/L)'.format(p) # concentration
 
-def heatmap_meangrop_id(meangrop_df,save_plot):
+def heatmap_meangroup_id(meangroup_df,save_plot):
      cbar_kws={}
      annot_kws={"size":8}
      fig,ax= plt.subplots(figsize=(8,6))
      cmap = sns.color_palette("rocket_r", as_cmap=True)
-     sns.heatmap(meangrop_df, annot=True,linewidths=.5,cbar_kws=cbar_kws,ax=ax, cmap=cmap, annot_kws=annot_kws)
+     sns.heatmap(meangroup_df, annot=True,linewidths=.5,cbar_kws=cbar_kws,ax=ax, cmap=cmap, annot_kws=annot_kws)
      
      cbar = ax.collections[0].colorbar
      cbar.ax.set_ylim(-1.2,1.5)
@@ -123,7 +124,7 @@ def heatmap_meangrop_id(meangrop_df,save_plot):
 
 
 
-################ plot by id ( Elevation and  distance_kishon) division to grop################################
+################ plot by id ( Elevation and  distance_kishon) division to group################################
 def label_point(x, y, val, ax):
     a = pd.concat({'x': x, 'y': y, 'val': val}, axis=1)
     for i, point in a.iterrows():
@@ -142,7 +143,7 @@ def distance_elevation(measurement_data,save_plot):
     measurement_data=measurement_data.sort_values(by='id')
     fig,ax= plt.subplots(figsize=(12,5))
     # 1 ccater plot
-    sns.scatterplot(data=measurement_data, x="distance_longest_flow", y="elevation_1", hue="grop_id",s=200,ax=ax)
+    sns.scatterplot(data=measurement_data, x="distance_longest_flow", y="elevation_1", hue="group_id",s=200,ax=ax)
     
     ax.set_xlabel('Distance from channel head (m)')#,size=40)
     ax.set_ylabel('Elevation (m)')#,size=40)
@@ -213,13 +214,19 @@ def distance_elevation(measurement_data,save_plot):
     fig.savefig(os.path.join(save_plot,'point_id','distance_elevation_line.jpg'), bbox_inches='tight', dpi=300)
     
          
-# plot by sample_date (grop by rain index)
+# plot by sample_date (group by rain index)
 
+# add_rain_data=tick_dates
+# save_plot=savefolder
 def Cumulative_rain_plot(add_rain_data,rain_data,save_plot): 
     # month_rain
     rain_data=rain_data.set_index('date',drop=False)
     rain_month3=rain_data.groupby(pd.Grouper(freq='M'))['rain_mm'].sum()
-    daterange = pd.date_range('2019-10-01','2022-01-01',freq='2M')
+
+    ### set daterange
+    # daterange = pd.date_range('2019-10-01','2022-01-01',freq='2M')
+    daterange = pd.date_range('2019-10-01','2021-10-01',freq='2M')
+
     daterange=[x+datetime.timedelta(days=1) for x in daterange]
     create_new_folder(os.path.join(save_plot,'rain_plot'))
     nwe_hy_date=add_rain_data.loc[add_rain_data['nwe_hy']==1,'sample_date'].values
@@ -228,151 +235,170 @@ def Cumulative_rain_plot(add_rain_data,rain_data,save_plot):
     x_lavel_2=add_rain_data.iloc[28,:]['sample_date']
     x_lavel_3=add_rain_data.iloc[33,:]['sample_date']
 
-  
-    #  Cumulative_ rain 1
-    fig,ax= plt.subplots(figsize=(52,22))
-    #plt.ylim(max(rain_month3), 0)
-    ax2 = ax.twinx()
-    ax2.invert_yaxis()
-    ax2.bar(rain_month3.index,rain_month3, color ='blue', width = 4)
-    ax2.set_ylabel('montthly rain mm',size=30)
-    ax2.tick_params(axis='both', which='major', labelsize=40)
-    ax2.tick_params(axis='both', which='minor', labelsize=35) 
-    ax.plot(add_rain_data['sample_date'],add_rain_data['Cumulative_ rain'],'-k',linewidth=2.0)
-    ax.plot(add_rain_data['sample_date'],add_rain_data['Cumulative_ rain'],'*k',markersize=18)
-    ax.set_xlim(add_rain_data.sample_date.min() - pd.DateOffset(5), add_rain_data.sample_date.max() + pd.DateOffset(5))
-    ax.set_xticks(daterange)
-    ax.axvline(pd.Timestamp('2020-10-01') , color='grey', linewidth=2, linestyle='--')  
-    ax.axvline(pd.Timestamp('2021-10-01'), color='grey', linewidth=2, linestyle='--')  
-    ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%y'))
-    ax.set_xlabel('Sample date',size=40)
-    ax.set_ylabel('Cumulative rain mm',size=40)
-    ax.tick_params(axis='both', which='major', labelsize=40)
-    ax.tick_params(axis='both', which='minor', labelsize=35) 
-    label=nwe_hy[0] 
-    ax.annotate(label, # this is the text
-    (x_lavel_1,200), # this is the point to label
-    textcoords="offset points", # how to position the text
-    xytext=(0,0), # distance from text to points (x,y)
-    ha='center',# horizontal alignment can be left, right or center 
-    fontsize=50,
-    color='red') 
-    label=nwe_hy[1] 
-    ax.annotate(label, # this is the text
-    (x_lavel_2,200), # this is the point to label
-    textcoords="offset points", # how to position the text
-    xytext=(0,0), # distance from text to points (x,y)
-    ha='center',# horizontal alignment can be left, right or center 
-    fontsize=50,
-    color='red') 
-    label=nwe_hy[2] 
-    ax.annotate(label, # this is the text
-    (x_lavel_3,200), # this is the point to label
-    textcoords="offset points", # how to position the text
-    xytext=(0,0), # distance from text to points (x,y)
-    ha='center',# horizontal alignment can be left, right or center 
-    fontsize=50,
-    color='red') 
-    fig.savefig(os.path.join(save_plot,'rain_plot','Cumulative_rain_month_rain.jpg'), bbox_inches='tight')
+    final_date = '2021-10-01'
+    ### FILTER UP to 3rd year
+    add_rain_data = add_rain_data.loc[add_rain_data.sample_date<final_date]
+    rain_month3 = rain_month3.loc[rain_month3.index <final_date]
+
+    def cumulativeRain1():
+        #  Cumulative_ rain 1
+        fig,ax= plt.subplots(figsize=(52,22))
+        #plt.ylim(max(rain_month3), 0)
+        ax2 = ax.twinx()
+        ax2.invert_yaxis()
+        ax2.bar(rain_month3.index,rain_month3, color ='blue', width = 4)
+        ax2.set_ylabel('montthly rain mm',size=30)
+        ax2.tick_params(axis='both', which='major', labelsize=40)
+        ax2.tick_params(axis='both', which='minor', labelsize=35)
+        ax.plot(add_rain_data['sample_date'],add_rain_data['Cumulative_ rain'],'-k',linewidth=2.0)
+        ax.plot(add_rain_data['sample_date'],add_rain_data['Cumulative_ rain'],'*k',markersize=18)
+        ax.set_xlim(add_rain_data.sample_date.min() - pd.DateOffset(5), add_rain_data.sample_date.max() + pd.DateOffset(5))
+        ax.set_xticks(daterange)
+        ax.axvline(pd.Timestamp('2020-10-01') , color='grey', linewidth=2, linestyle='--')
+        ax.axvline(pd.Timestamp('2021-10-01'), color='grey', linewidth=2, linestyle='--')
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%y'))
+        ax.set_xlabel('Sample date',size=40)
+        ax.set_ylabel('Cumulative rain mm',size=40)
+        ax.tick_params(axis='both', which='major', labelsize=40)
+        ax.tick_params(axis='both', which='minor', labelsize=35)
+        label=nwe_hy[0]
+        ax.annotate(label, # this is the text
+        (x_lavel_1,200), # this is the point to label
+        textcoords="offset points", # how to position the text
+        xytext=(0,0), # distance from text to points (x,y)
+        ha='center',# horizontal alignment can be left, right or center
+        fontsize=50,
+        color='red')
+        label=nwe_hy[1]
+        ax.annotate(label, # this is the text
+        (x_lavel_2,200), # this is the point to label
+        textcoords="offset points", # how to position the text
+        xytext=(0,0), # distance from text to points (x,y)
+        ha='center',# horizontal alignment can be left, right or center
+        fontsize=50,
+        color='red')
+        label=nwe_hy[2]
+        ax.annotate(label, # this is the text
+        (x_lavel_3,200), # this is the point to label
+        textcoords="offset points", # how to position the text
+        xytext=(0,0), # distance from text to points (x,y)
+        ha='center',# horizontal alignment can be left, right or center
+        fontsize=50,
+        color='red')
+        fig.savefig(os.path.join(save_plot,'rain_plot','Cumulative_rain_month_rain.jpg'), bbox_inches='tight')
+
+    def cumulativeRain2():
+        #  Cumulative_ rain 2
+        fig,ax= plt.subplots(figsize=(52,22))
+        #plt.ylim(max(rain_month3), 0)
+        ax2 = ax.twinx()
+        ax2.invert_yaxis()
+        ax2.bar(rain_month3.index,rain_month3, color ='blue', width = 4)
+        ax2.set_ylabel('montthly rain mm',size=30)
+        ax2.tick_params(axis='both', which='major', labelsize=40)
+        ax2.tick_params(axis='both', which='minor', labelsize=35)
+        ax.plot(add_rain_data['sample_date'],add_rain_data['Cumulative_ rain_2'],'-k',linewidth=2.0)
+        ax.plot(add_rain_data['sample_date'],add_rain_data['Cumulative_ rain_2'],'*k',markersize=18)
+        ax.set_xlim(add_rain_data.sample_date.min() - pd.DateOffset(5), add_rain_data.sample_date.max() + pd.DateOffset(5))
+        ax.set_xticks(daterange)
+        ax.axvline(pd.Timestamp('2020-10-01'), color='grey', linewidth=2, linestyle='--')
+        ax.axvline(pd.Timestamp('2021-10-01'), color='grey', linewidth=2, linestyle='--')
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%y'))
+        ax.set_xlabel('Sample date',size=40)
+        ax.set_ylabel('Cumulative rain mm',size=40)
+        ax.tick_params(axis='both', which='major', labelsize=40)
+        ax.tick_params(axis='both', which='minor', labelsize=35)
+        label= nwe_hy[0]
+        ax.annotate(label, # this is the text
+        (x_lavel_1,200), # this is the point to label
+        textcoords="offset points", # how to position the text
+        xytext=(0,0), # distance from text to points (x,y)
+        ha='center',# horizontal alignment can be left, right or center
+        fontsize=50,
+        color='red')
+        label= nwe_hy[1]
+        ax.annotate(label, # this is the text
+        (x_lavel_2,200), # this is the point to label
+        textcoords="offset points", # how to position the text
+        xytext=(0,0), # distance from text to points (x,y)
+        ha='center',# horizontal alignment can be left, right or center
+        fontsize=50,
+        color='red')
+        label=nwe_hy[2]
+        ax.annotate(label, # this is the text
+        (x_lavel_3,200), # this is the point to label
+        textcoords="offset points", # how to position the text
+        xytext=(0,0), # distance from text to points (x,y)
+        ha='center',# horizontal alignment can be left, right or center
+        fontsize=50,
+        color='red')
+        fig.savefig(os.path.join(save_plot,'rain_plot','Cumulative_rain_month_rain_2.jpg'), bbox_inches='tight')
+
+    def cumulativeRain3():
+        #  Cumulative_ rain 3
+        fig,ax= plt.subplots(figsize=(9,5))
+        #plt.ylim(max(rain_month3), 0)
+        ax2 = ax.twinx()
+
+        ## add top and right border
+        for pos in ['top','right']:
+            ax2.spines[pos].set_visible(True)
+
+        ax2.invert_yaxis()
+        ax2.bar(rain_month3.index,rain_month3, color ='blue', width = 6, alpha=.7)
+        ax2.set_ylabel('Monthly precipitation (mm)', color='blue')#,size=30)
+        ax2.tick_params(axis='y', which='major', labelcolor='blue')#, labelsize=40)
+        ax2.tick_params(axis='both', which='major')#, labelsize=40)
+        ax2.tick_params(axis='both', which='minor')#, labelsize=35)
+        grouped=add_rain_data.groupby(by='HY')
+        for name,group in grouped:
+         print(name)
+         ax.plot(group['sample_date'],group['Cumulative_ rain_2'],'-k',linewidth=2.0)
+         ax.plot(group['sample_date'],group['Cumulative_ rain_2'],'ok',markersize=3)
+        ax.set_xlim(add_rain_data.sample_date.min() - pd.DateOffset(5), add_rain_data.sample_date.max() + pd.DateOffset(5))
+        ax.set_xticks(daterange)
+        ax.axvline(pd.Timestamp('2020-10-16'), color='grey', linewidth=2, linestyle='--')
+        #ax.axvline(pd.Timestamp('2021-10-01'), color='grey', linewidth=2, linestyle='--')
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%y'))
+        ax.set_xlabel('Sample date')#,size=40)
+        ax.set_ylabel('Cumulative precipitation (mm)')#,size=40)
+
+        ax.tick_params(axis='both', which='major')#, labelsize=40)
+        ax.tick_params(axis='both', which='minor')#, labelsize=35)
+        label= nwe_hy[0]
+        ax.annotate(label, # this is the text
+        # (x_lavel_1,100), # this is the point to label
+        (pd.Timestamp('2020-08-01'),100), # this is the point to label
+        textcoords="offset points", # how to position the text
+        xytext=(0,0), # distance from text to points (x,y)
+        ha='center',# horizontal alignment can be left, right or center
+        fontsize=14,
+        color='red')
+        label= nwe_hy[1]
+        ax.annotate(label, # this is the text
+        # (x_lavel_2,100), # this is the point to label
+        (pd.Timestamp('2021-08-01'),100), # this is the point to label
+
+        textcoords="offset points", # how to position the text
+        xytext=(0,0), # distance from text to points (x,y)
+        ha='center',# horizontal alignment can be left, right or center
+        fontsize=14,
+        color='red')
+        # label=nwe_hy[2]
+        # ax.annotate(label, # this is the text
+        # (x_lavel_3,200), # this is the point to label
+        # textcoords="offset points", # how to position the text
+        # xytext=(0,0), # distance from text to points (x,y)
+        # ha='center',# horizontal alignment can be left, right or center
+        # fontsize=14,
+        # color='red')
+
+        fig.savefig(os.path.join(save_plot,'rain_plot','Cumulative_rain_month_rain_3.jpg'), bbox_inches='tight', dpi=300)
+
+    cumulativeRain3()
     
-    #  Cumulative_ rain 2
-    fig,ax= plt.subplots(figsize=(52,22))
-    #plt.ylim(max(rain_month3), 0)
-    ax2 = ax.twinx()
-    ax2.invert_yaxis()
-    ax2.bar(rain_month3.index,rain_month3, color ='blue', width = 4)
-    ax2.set_ylabel('montthly rain mm',size=30)
-    ax2.tick_params(axis='both', which='major', labelsize=40)
-    ax2.tick_params(axis='both', which='minor', labelsize=35) 
-    ax.plot(add_rain_data['sample_date'],add_rain_data['Cumulative_ rain_2'],'-k',linewidth=2.0)
-    ax.plot(add_rain_data['sample_date'],add_rain_data['Cumulative_ rain_2'],'*k',markersize=18)
-    ax.set_xlim(add_rain_data.sample_date.min() - pd.DateOffset(5), add_rain_data.sample_date.max() + pd.DateOffset(5))
-    ax.set_xticks(daterange)
-    ax.axvline(pd.Timestamp('2020-10-01'), color='grey', linewidth=2, linestyle='--')  
-    ax.axvline(pd.Timestamp('2021-10-01'), color='grey', linewidth=2, linestyle='--')  
-    ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%y'))
-    ax.set_xlabel('Sample date',size=40)
-    ax.set_ylabel('Cumulative rain mm',size=40)
-    ax.tick_params(axis='both', which='major', labelsize=40)
-    ax.tick_params(axis='both', which='minor', labelsize=35) 
-    label= nwe_hy[0] 
-    ax.annotate(label, # this is the text
-    (x_lavel_1,200), # this is the point to label
-    textcoords="offset points", # how to position the text
-    xytext=(0,0), # distance from text to points (x,y)
-    ha='center',# horizontal alignment can be left, right or center 
-    fontsize=50,
-    color='red') 
-    label= nwe_hy[1] 
-    ax.annotate(label, # this is the text
-    (x_lavel_2,200), # this is the point to label
-    textcoords="offset points", # how to position the text
-    xytext=(0,0), # distance from text to points (x,y)
-    ha='center',# horizontal alignment can be left, right or center 
-    fontsize=50,
-    color='red') 
-    label=nwe_hy[2] 
-    ax.annotate(label, # this is the text
-    (x_lavel_3,200), # this is the point to label
-    textcoords="offset points", # how to position the text
-    xytext=(0,0), # distance from text to points (x,y)
-    ha='center',# horizontal alignment can be left, right or center 
-    fontsize=50,
-    color='red') 
-    fig.savefig(os.path.join(save_plot,'rain_plot','Cumulative_rain_month_rain_2.jpg'), bbox_inches='tight')
     
-    #  Cumulative_ rain 3
-    fig,ax= plt.subplots(figsize=(52,22))
-    #plt.ylim(max(rain_month3), 0)
-    ax2 = ax.twinx()
-    ax2.invert_yaxis()
-    ax2.bar(rain_month3.index,rain_month3, color ='blue', width = 4)
-    ax2.set_ylabel('montthly rain mm',size=30)
-    ax2.tick_params(axis='both', which='major', labelsize=40)
-    ax2.tick_params(axis='both', which='minor', labelsize=35) 
-    grouped=add_rain_data.groupby(by='HY')
-    for name,group in grouped:
-     print(name)
-     ax.plot(group['sample_date'],group['Cumulative_ rain_2'],'-k',linewidth=2.0)
-     ax.plot(group['sample_date'],group['Cumulative_ rain_2'],'*k',markersize=18)
-    ax.set_xlim(add_rain_data.sample_date.min() - pd.DateOffset(5), add_rain_data.sample_date.max() + pd.DateOffset(5))
-    ax.set_xticks(daterange)
-    ax.axvline(pd.Timestamp('2020-10-01'), color='grey', linewidth=2, linestyle='--')  
-    ax.axvline(pd.Timestamp('2021-10-01'), color='grey', linewidth=2, linestyle='--')  
-    ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%y'))
-    ax.set_xlabel('Sample date',size=40)
-    ax.set_ylabel('Cumulative rain mm',size=40)
-    ax.tick_params(axis='both', which='major', labelsize=40)
-    ax.tick_params(axis='both', which='minor', labelsize=35) 
-    label= nwe_hy[0] 
-    ax.annotate(label, # this is the text
-    (x_lavel_1,200), # this is the point to label
-    textcoords="offset points", # how to position the text
-    xytext=(0,0), # distance from text to points (x,y)
-    ha='center',# horizontal alignment can be left, right or center 
-    fontsize=50,
-    color='red') 
-    label= nwe_hy[1] 
-    ax.annotate(label, # this is the text
-    (x_lavel_2,200), # this is the point to label
-    textcoords="offset points", # how to position the text
-    xytext=(0,0), # distance from text to points (x,y)
-    ha='center',# horizontal alignment can be left, right or center 
-    fontsize=50,
-    color='red')   
-    label=nwe_hy[2] 
-    ax.annotate(label, # this is the text
-    (x_lavel_3,200), # this is the point to label
-    textcoords="offset points", # how to position the text
-    xytext=(0,0), # distance from text to points (x,y)
-    ha='center',# horizontal alignment can be left, right or center 
-    fontsize=50,
-    color='red') 
-    
-    
-    
-    fig.savefig(os.path.join(save_plot,'rain_plot','Cumulative_rain_month_rain_3.jpg'), bbox_inches='tight')
-    
+
     
     
     
@@ -469,57 +495,72 @@ def rgesin_spi(add_rain_data,save_plot):
     
     
     
-# line plot by grop
+# line plot by group
 
-def grop_plot(grop_data,poll_list,grop_poll_list,save_plot):
+
+
+
+def group_plot(group_data,poll_list,group_poll_list,save_plot):
     a=0
-    for polls in grop_poll_list: #lopp on grop poll 
+    for polls in group_poll_list: #lopp on group poll 
       a=a+1
+
       for poll in polls:
-         create_new_folder(os.path.join(save_plot,'line_grop','grop_poll_'+str(a))) 
+         create_new_folder(os.path.join(save_plot,'line_group','group_poll_'+str(a)))
+
+         print(poll)
+         data_plot=group_data.loc[:,['id','id_group','spi_group','group',poll]]
+         group_mean_id=data_plot.groupby(by='id_group')[poll].mean().reset_index(drop=False)
+         group_mean_spi=data_plot.groupby(by='spi_group')[poll].mean().reset_index(drop=False)
+         #group_mean_1=data_plot.groupby(by='group')[poll].mean()
+         # group_mean=data_plot.groupby(by=['id_group','spi_group'])[poll].mean().reset_index(drop=False)
+         group_mean=data_plot.groupby(by=['id_group','spi_group'])[poll].agg(['mean','sem']).reset_index(drop=False)
+
+         group_mean= group_mean.loc[ group_mean['spi_group']!='wet2dry5',:]
+
+        ### SET CATEGORICAL TYPES
+         group_mean['id_group'] = ['Midstream' if x == 'Middlestream' else x for x in group_mean['id_group']]
+         cat_type = CategoricalDtype(categories=["Upstream", "Midstream", "Downstream"], ordered=True)
+         group_mean['id_group'] = group_mean['id_group'].astype(cat_type)
+
+         cat_type = CategoricalDtype(categories=["dry2dry5", "dry2wet5", "wet2wet5",'other'], ordered=True)
+         group_mean['spi_group'] = group_mean['spi_group'].astype(cat_type)
          
-         print( poll)
-         data_plot=grop_data.loc[:,['id','id_grop','spi_grop','grop',poll]]
-         grop_mean_id=data_plot.groupby(by='id_grop')[poll].mean().reset_index(drop=False)
-         grop_mean_spi=data_plot.groupby(by='spi_grop')[poll].mean().reset_index(drop=False)
-         #grop_mean_1=data_plot.groupby(by='grop')[poll].mean()
-         grop_mean=data_plot.groupby(by=['id_grop','spi_grop'])[poll].mean().reset_index(drop=False)
-         grop_mean= grop_mean.loc[ grop_mean['spi_grop']!='wet2dry5',:]
-         
-         # line plot  
-         palette=['blue','orange','yellow','red']
-         fig,ax= plt.subplots(figsize=(52,22)) #"Set2"
-         sns.lineplot(x='id_grop', y=poll,hue="spi_grop", data=grop_mean,palette=palette, estimator=None,linewidth=15,ax=ax)
-         ax.set_xlabel('id grop',size=50)
+         # line plot
+         palette=['yellow','orange','blue','red']
+
+         fig,ax= plt.subplots(figsize=(5,4)) #"Set2"
+         #sns.lineplot(x='id_group', y=poll,hue="spi_group", marker='o', data=group_mean, palette=palette, estimator=None,linewidth=1.5,ax=ax)
+         sns.lineplot(x='id_group', y='mean', hue="spi_group", marker='o', data=group_mean, palette=palette, estimator=None,linewidth=1.5,ax=ax)
+         ax.set_xlabel('Stream section')#,size=50)
          yLabel_unit=yLabel(poll)
-         ax.set_ylabel(yLabel_unit,size=50)
-         ax.tick_params(axis='both', which='major', labelsize=40)
-         ax.tick_params(axis='both', which='minor', labelsize=35) 
-         ax.legend(title="", fontsize=40, title_fontsize=15)
-         fig.savefig(os.path.join(save_plot,'line_grop','grop_poll_'+str(a),poll+'.jpg'), bbox_inches='tight')
-   
-        
-         
-    return data_plot,grop_mean_id, grop_mean_spi, grop_mean
-         
-    
+         ax.set_ylabel(yLabel_unit)#,size=50)
+         ax.tick_params(axis='both', which='major')#, labelsize=40)
+         ax.tick_params(axis='both', which='minor')#, labelsize=35)
+         ax.legend(title="")#, fontsize=40, title_fontsize=15)
+         fig.savefig(os.path.join(save_plot,'line_group','group_poll_'+str(a),poll+'.jpg'), bbox_inches='tight',dpi=300)
+
+
+
+    return data_plot,group_mean_id, group_mean_spi, group_mean
+
 
 
 
 
 
 # duration_curve (standard)
-def duration_curve_1(df,poll_list,grop_poll_list,poll_std,save_plot):
+def duration_curve_1(df,poll_list,group_poll_list,poll_std,save_plot):
    
     a=0
-    for polls in grop_poll_list: #lopp on grop poll 
+    for polls in group_poll_list: #lopp on group poll 
       a=a+1
       for poll in polls:
       
-         create_new_folder(os.path.join(save_plot,'duration_curve','grop_poll_'+str(a))) 
+         create_new_folder(os.path.join(save_plot,'duration_curve','group_poll_'+str(a))) 
         
-         data_poll=df.loc[:,['id','id_grop','spi_grop','grop',poll]].reset_index(drop=True)  
-         grouped=data_poll.groupby(by='id_grop') 
+         data_poll=df.loc[:,['id','id_group','spi_group','group',poll]].reset_index(drop=True)  
+         grouped=data_poll.groupby(by='id_group') 
          
          
          for name,group in grouped:
@@ -550,20 +591,20 @@ def duration_curve_1(df,poll_list,grop_poll_list,poll_std,save_plot):
     
            ax.legend(title='Sample id', title_fontsize=25, ncol=1, loc='center left', bbox_to_anchor=(1.15, 0.5), fontsize=25, frameon=False)
            
-           fig.savefig(os.path.join(save_plot,'duration_curve','grop_poll_'+str(a),poll+'_'+name+'.jpg'), bbox_inches='tight')
+           fig.savefig(os.path.join(save_plot,'duration_curve','group_poll_'+str(a),poll+'_'+name+'.jpg'), bbox_inches='tight')
      
       
    
-def duration_curve_2(df,poll_list,grop_poll_list,poll_std,save_plot):
+def duration_curve_2(df,poll_list,group_poll_list,poll_std,save_plot):
     a=0
-    for polls in grop_poll_list: #lopp on grop poll 
+    for polls in group_poll_list: #lopp on group poll 
       a=a+1
       for poll in polls:
       
-         create_new_folder(os.path.join(save_plot,'duration_curve_2','grop_poll_'+str(a))) 
+         create_new_folder(os.path.join(save_plot,'duration_curve_2','group_poll_'+str(a))) 
         
-         data_poll=df.loc[:,['sample_date','id','id_grop','spi_grop','grop',poll]].reset_index(drop=True)  
-         grouped=data_poll.groupby(by='id_grop') 
+         data_poll=df.loc[:,['sample_date','id','id_group','spi_group','group',poll]].reset_index(drop=True)  
+         grouped=data_poll.groupby(by='id_group') 
          fig,ax= plt.subplots(figsize=(22,12))  
          try:
            std = poll_std[poll]
@@ -584,7 +625,7 @@ def duration_curve_2(df,poll_list,grop_poll_list,poll_std,save_plot):
          ax.tick_params(axis='both', which='major', labelsize=40)
          ax.tick_params(axis='both', which='minor', labelsize=35) 
          ax.legend(title='Sample id', title_fontsize=25, ncol=1, loc='center left', bbox_to_anchor=(1.15, 0.5), fontsize=25, frameon=False)
-         fig.savefig(os.path.join(save_plot,'duration_curve_2','grop_poll_'+str(a),poll+'_'+name+'.jpg'), bbox_inches='tight')
+         fig.savefig(os.path.join(save_plot,'duration_curve_2','group_poll_'+str(a),poll+'_'+name+'.jpg'), bbox_inches='tight')
    
   
              

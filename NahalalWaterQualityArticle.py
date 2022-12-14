@@ -20,6 +20,8 @@ folder ='data'
 df = pd.read_csv(os.path.join(folder,'final_df.csv'), parse_dates=['sample_date'])
 point_measurement_data= pd.read_csv(os.path.join(folder,'point_measurement_data.csv'))
 rain_data=pd.read_excel(os.path.join(folder,'rain_data.xlsx'), sheet_name='rain')
+
+
 #sample_date_seasonrain=pd.read_excel(os.path.join(folder,'sample_date.xlsx'), sheet_name='sample_date')
 #%%
 
@@ -42,7 +44,7 @@ poll2 =['Na','Cl']
 poll3 = ['N-NH4', 'N-NO3', 'N-NO2','TN']
 poll4=['P-PO4','K','Ca','Mg','S-SO4']
 poll5 = ['Mn', 'Zn','Cu', 'Fe','Mo','B','Al','Co']
-grop_poll_list=[poll1]+[poll2]+[poll3]+[poll4]+[poll5]
+group_poll_list=[poll1]+[poll2]+[poll3]+[poll4]+[poll5]
 poll_list=poll1+poll2+poll3+poll4+poll5
 poll_list_unite=[i+' mg/l' for i in poll_list]
 rain_columns=['Cumulative_ rain','day_2','day_5','spi_2','spi_5']
@@ -79,15 +81,15 @@ dict_Transformation_df=TransformationData_fun(df_13,poll_list)
 Standard_norm_data_13=dict_Transformation_df['Standard']
 
 #%%
-# grop data by id and spi index 
-poll_data_join_rain_celect_columns=poll_data_join_rain.loc[:,['sample_date','id','spi_grop']+poll_list]
-poll_data_join_rain_celect_columns['spi_grop']=poll_data_join_rain_celect_columns['spi_grop'].fillna('other')
+# group data by id and spi index 
+poll_data_join_rain_celect_columns=poll_data_join_rain.loc[:,['sample_date','id','spi_group']+poll_list]
+poll_data_join_rain_celect_columns['spi_group']=poll_data_join_rain_celect_columns['spi_group'].fillna('other')
 ID_array=poll_data_join_rain_celect_columns['id'].values
-id_grop= ['Upstream' if x in [1,2,3] else 'Middlestream' if x in [4,5,7,8,9] else 'Downstream' for x in ID_array]
-poll_data_join_rain_celect_columns.insert(1, 'id_grop',id_grop)
+id_group= ['Upstream' if x in [1,2,3] else 'Middlestream' if x in [4,5,7,8,9] else 'Downstream' for x in ID_array]
+poll_data_join_rain_celect_columns.insert(1, 'id_group',id_group)
 
-grop_3=[str(a)+'_'+str(b) for a,b in zip(poll_data_join_rain_celect_columns['spi_grop'],poll_data_join_rain_celect_columns['id_grop'])]
-poll_data_join_rain_celect_columns.insert(3, 'grop',grop_3)
+group_3=[str(a)+'_'+str(b) for a,b in zip(poll_data_join_rain_celect_columns['spi_group'],poll_data_join_rain_celect_columns['id_group'])]
+poll_data_join_rain_celect_columns.insert(3, 'group',group_3)
 
 
 
@@ -102,8 +104,8 @@ savefolder = 'graphs'
 
 #%%
 #1
-a,b,c,d=grop_data_mean_id(Standard_norm_data_13, poll_list)
-heatmap_meangrop_id(d,savefolder)
+a,b,c,d=group_data_mean_id(Standard_norm_data_13, poll_list)
+heatmap_meangroup_id(d,savefolder)
 
 #%%
 #2 
@@ -118,13 +120,13 @@ spi_plot(tick_dates,savefolder)
 rgesin_spi(tick_dates,savefolder)
 #%%
 #4
-a=grop_plot(poll_data_join_rain_celect_columns,poll_list,grop_poll_list,savefolder)
+a=group_plot(poll_data_join_rain_celect_columns,poll_list,group_poll_list,savefolder)
 #%%
 #5.1
-duration_curve_1(poll_data_join_rain_celect_columns,poll_list,grop_poll_list,poll_std,savefolder)
+duration_curve_1(poll_data_join_rain_celect_columns,poll_list,group_poll_list,poll_std,savefolder)
 #%%
 #5.2
-B=duration_curve_2(poll_data_join_rain_celect_columns,poll_list,grop_poll_list,poll_std,savefolder)
+B=duration_curve_2(poll_data_join_rain_celect_columns,poll_list,group_poll_list,poll_std,savefolder)
 
 
 
