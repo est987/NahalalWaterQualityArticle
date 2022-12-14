@@ -1,15 +1,23 @@
-import os 
+import os
 import pandas as pd,numpy as np #geopandas as gpd, 
 
 
-# import the fun to crete the plot 
-fp='//fs01/users/matanb/GitHub/NahalalWaterQualityArticle'
-os.chdir(fp)
+# import the fun to crete the plot
+
+### connect to local data - removed
+# fp='//fs01/users/matanb/GitHub/NahalalWaterQualityArticle'
+# os.chdir(fp)
+
+os.getcwd()
+
 from def_plot import *
 from helperMethods import *
 
 ################   get the data  #################
-folder ='//fs01/users/matanb/GitHub/NahalalWaterQualityArticle/data' 
+
+folder ='data'
+
+# folder ='//fs01/users/matanb/GitHub/NahalalWaterQualityArticle/data'
 df = pd.read_csv(os.path.join(folder,'final_df.csv'), parse_dates=['sample_date'])
 point_measurement_data= pd.read_csv(os.path.join(folder,'point_measurement_data.csv'))
 rain_data=pd.read_excel(os.path.join(folder,'rain_data.xlsx'), sheet_name='rain')
