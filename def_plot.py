@@ -140,34 +140,40 @@ def label_point(x, y, val, ax):
 
 def distance_elevation(measurement_data,save_plot):
     measurement_data=measurement_data.sort_values(by='id')
-    fig,ax= plt.subplots(figsize=(32,12))
+    fig,ax= plt.subplots(figsize=(12,5))
     # 1 ccater plot
     sns.scatterplot(data=measurement_data, x="distance_longest_flow", y="elevation_1", hue="grop_id",s=200,ax=ax)
     
-    ax.set_xlabel('Distance longest flow (m)',size=40)
-    ax.set_ylabel('Elevation (m)',size=40)
-    ax.tick_params(axis='both', which='major', labelsize=40)
-    ax.tick_params(axis='both', which='minor', labelsize=35) 
-    ax.legend(title="", fontsize=20, title_fontsize=15)
+    ax.set_xlabel('Distance from channel head (m)')#,size=40)
+    ax.set_ylabel('Elevation (m)')#,size=40)
+    ax.tick_params(axis='both', which='major')#, labelsize=40)
+    ax.tick_params(axis='both', which='minor')#, labelsize=35)
+    ax.legend(title="")#, fontsize=20, title_fontsize=15)
     label_point(measurement_data.distance_longest_flow, measurement_data.elevation_1, measurement_data.id, ax)  
     create_new_folder(os.path.join(save_plot,'point_id'))
-    fig.savefig(os.path.join(save_plot,'point_id','distance_elevation.jpg'), bbox_inches='tight')
+    fig.savefig(os.path.join(save_plot,'point_id','distance_elevation.jpg'), bbox_inches='tight', dpi=300)
     
     # 2 line plot 
-    fig,ax= plt.subplots(figsize=(32,12))
+    # fig,ax= plt.subplots(figsize=(32,12))
+    fig,ax= plt.subplots(figsize=(10,4))
     ax.plot(measurement_data['id'],measurement_data['distance_longest_flow'],'-k',linewidth=2.0)
-    ax.plot(measurement_data['id'],measurement_data['distance_longest_flow'],'*k',markersize=18)
-    ax.set_xlabel('Id',size=40)
-    ax.set_ylabel('Distance longest flow (m)',size=40)
-    ax.tick_params(axis='both', which='major', labelsize=40)
-    ax.tick_params(axis='both', which='minor', labelsize=35) 
+    ax.plot(measurement_data['id'],measurement_data['distance_longest_flow'],'*k',markersize=9)
+    ax.set_xlabel('Sample point ID')#,size=40)
+    ax.set_ylabel('Distance from channel head (m)'),#,size=40)
+    ax.tick_params(axis='both', which='major')#, labelsize=40)
+    ax.tick_params(axis='both', which='minor') #, labelsize=35)
+
     ax_b=ax.twinx()
+
+    #show right_spine
+    ax_b.spines['right'].set_visible(True)
+
     ax_b.plot(measurement_data['id'],measurement_data['elevation_1'],'-r',linewidth=2.0)
-    ax_b.plot(measurement_data['id'],measurement_data['elevation_1'],'*r',markersize=18)
-    ax_b.set_xlabel('Id',size=40)
-    ax_b.set_ylabel('Elevation (m)',size=40)
-    ax_b.tick_params(axis='both', which='major', labelsize=40)
-    ax_b.tick_params(axis='both', which='minor', labelsize=35) 
+    ax_b.plot(measurement_data['id'],measurement_data['elevation_1'],'*r',markersize=9)
+    ax_b.set_xlabel('Sample point ID')#,size=40)
+    ax_b.set_ylabel('Elevation (m)', color='red')#,size=40)
+    ax_b.tick_params(axis='both', which='major', labelcolor='red')#, labelsize=40)
+    ax_b.tick_params(axis='both', which='minor')#, labelsize=35)
     #ax.set_xticks(list(measurement_data['id']))
     ax.set_xticks(list(measurement_data['id']))     
     create_new_folder(os.path.join(save_plot,'point_id'))
@@ -176,35 +182,39 @@ def distance_elevation(measurement_data,save_plot):
     ax.axvline(3.5, color='grey', linewidth=2, linestyle='--')  
     ax.axvline(9.5, color='grey', linewidth=2, linestyle='--') 
 
+    annotate_font_size=14
+    annotate_font_color='blue'
+
     label='Upstream' 
     ax.annotate(label, # this is the text
-    (2,5000), # this is the point to label
+    (1.5,7000), # this is the point to label
     textcoords="offset points", # how to position the text
     xytext=(0,0), # distance from text to points (x,y)
     ha='center',# horizontal alignment can be left, right or center 
-    fontsize=20,
-    color='red') 
-    label='Middlestream'
+    fontsize=annotate_font_size,
+    color=annotate_font_color)
+    label='Midstream'
     ax.annotate(label, # this is the text
-    (7,5000), # this is the point to label
+    (6,7000), # this is the point to label
     textcoords="offset points", # how to position the text
     xytext=(0,0), # distance from text to points (x,y)
     ha='center',# horizontal alignment can be left, right or center 
-    fontsize=20,
-    color='red') 
+    fontsize=annotate_font_size,
+    color=annotate_font_color)
     label='Downstream'
     ax.annotate(label, # this is the text
-    (12,5000), # this is the point to label
+    (11.5,7000), # this is the point to label
     textcoords="offset points", # how to position the text
     xytext=(0,0), # distance from text to points (x,y)
     ha='center',# horizontal alignment can be left, right or center 
-    fontsize=20,
-    color='red') 
+    fontsize=annotate_font_size,
+    color=annotate_font_color)
     
-    fig.savefig(os.path.join(save_plot,'point_id','distance_elevation_line.jpg'), bbox_inches='tight')
+    fig.savefig(os.path.join(save_plot,'point_id','distance_elevation_line.jpg'), bbox_inches='tight', dpi=300)
     
          
-# plot by sample_date (grop by rain index) 
+# plot by sample_date (grop by rain index)
+
 def Cumulative_rain_plot(add_rain_data,rain_data,save_plot): 
     # month_rain
     rain_data=rain_data.set_index('date',drop=False)
