@@ -6,7 +6,7 @@ import pandas as pd,numpy as np #geopandas as gpd,
 fp='//fs01/users/matanb/GitHub/NahalalWaterQualityArticle'
 os.chdir(fp)
 from def_plot import *
-
+from helperMethods import *
 
 ################   get the data  #################
 folder ='//fs01/users/matanb/GitHub/NahalalWaterQualityArticle/data' 
@@ -84,7 +84,11 @@ poll_data_join_rain_celect_columns.insert(3, 'grop',grop_3)
 
 
 
-#%%
+### RUN PLOT GRAPHS
+
+###
+setStyle()
+
 #save plot folder 
 savefolder = '//fs01/users/matanb/GitHub/NahalalWaterQualityArticle/graphs/31102022'
 #%%
