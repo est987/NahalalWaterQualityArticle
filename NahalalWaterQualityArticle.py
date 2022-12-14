@@ -1,17 +1,16 @@
-import os
-import pandas as pd,numpy as np #geopandas as gpd, 
+import os, pandas as pd, numpy as np, geopandas as gpd
+from def_plot import *
+from helperMethods import setStyle
 
+# import the fun to create the plot
 
-# import the fun to crete the plot
-
-### connect to local data - removed
+### set workinf directory 9
 # fp='//fs01/users/matanb/GitHub/NahalalWaterQualityArticle'
 # os.chdir(fp)
 
-os.getcwd()
+print(os.getcwd())
 
-from def_plot import *
-from helperMethods import *
+
 
 ################   get the data  #################
 
@@ -98,11 +97,14 @@ poll_data_join_rain_celect_columns.insert(3, 'grop',grop_3)
 setStyle()
 
 #save plot folder 
-savefolder = '//fs01/users/matanb/GitHub/NahalalWaterQualityArticle/graphs/31102022'
+# savefolder = '//fs01/users/matanb/GitHub/NahalalWaterQualityArticle/graphs/31102022'
+savefolder = 'graphs'
+
 #%%
 #1
 a,b,c,d=grop_data_mean_id(Standard_norm_data_13, poll_list)
 heatmap_meangrop_id(d,savefolder)
+
 #%%
 #2 
 distance_elevation(point_measurement_data,savefolder)
