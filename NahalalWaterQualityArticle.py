@@ -29,7 +29,7 @@ rain_data=pd.read_excel(os.path.join(folder,'rain_data.xlsx'), sheet_name='rain'
 ###############   delect data #########################
 # drop TON, IC
 df_drop=df.drop(['TON','IC'], axis=1)
-# drop 10/12/19
+# drop 10/12/19 - HEAVY POLLUTION DAY
 df_drop=df_drop.loc[df['sample_date']!='2019-11-12 00:00:00',:]
 #select  ids 1-13
 df_13=df_drop.loc[df_drop['id']<=13,:]
@@ -82,14 +82,14 @@ Standard_norm_data_13=dict_Transformation_df['Standard']
 
 #%%
 # group data by id and spi index 
-poll_data_join_rain_celect_columns=poll_data_join_rain.loc[:,['sample_date','id','spi_group']+poll_list]
-poll_data_join_rain_celect_columns['spi_group']=poll_data_join_rain_celect_columns['spi_group'].fillna('other')
-ID_array=poll_data_join_rain_celect_columns['id'].values
-id_group= ['Upstream' if x in [1,2,3] else 'Middlestream' if x in [4,5,7,8,9] else 'Downstream' for x in ID_array]
-poll_data_join_rain_celect_columns.insert(1, 'id_group',id_group)
+poll_data_join_rain_select_columns=poll_data_join_rain.loc[:,['sample_date','id','spi_group']+poll_list]
+poll_data_join_rain_select_columns['spi_group']=poll_data_join_rain_select_columns['spi_group'].fillna('other')
+ID_array=poll_data_join_rain_select_columns['id'].values
+id_group= ['Upstream' if x in [1,2,3] else 'Midstream' if x in [4,5,7,8,9] else 'Downstream' for x in ID_array]
+poll_data_join_rain_select_columns.insert(1, 'id_group',id_group)
 
-group_3=[str(a)+'_'+str(b) for a,b in zip(poll_data_join_rain_celect_columns['spi_group'],poll_data_join_rain_celect_columns['id_group'])]
-poll_data_join_rain_celect_columns.insert(3, 'group',group_3)
+group_3=[str(a)+'_'+str(b) for a,b in zip(poll_data_join_rain_select_columns['spi_group'],poll_data_join_rain_select_columns['id_group'])]
+poll_data_join_rain_select_columns.insert(3, 'group',group_3)
 
 
 
@@ -120,13 +120,13 @@ spi_plot(tick_dates,savefolder)
 rgesin_spi(tick_dates,savefolder)
 #%%
 #4
-a=group_plot(poll_data_join_rain_celect_columns,poll_list,group_poll_list,savefolder)
+a=group_plot(poll_data_join_rain_select_columns,poll_list,group_poll_list,savefolder)
 #%%
 #5.1
-duration_curve_1(poll_data_join_rain_celect_columns,poll_list,group_poll_list,poll_std,savefolder)
+duration_curve_1(poll_data_join_rain_select_columns,poll_list,group_poll_list,poll_std,savefolder)
 #%%
 #5.2
-B=duration_curve_2(poll_data_join_rain_celect_columns,poll_list,group_poll_list,poll_std,savefolder)
+B=duration_curve_2(poll_data_join_rain_select_columns,poll_list,group_poll_list,poll_std,savefolder)
 
 
 

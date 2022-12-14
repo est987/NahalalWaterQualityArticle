@@ -564,7 +564,7 @@ def duration_curve_1(df,poll_list,group_poll_list,poll_std,save_plot):
          
          
          for name,group in grouped:
-           fig,ax= plt.subplots(figsize=(22,12))   
+           fig,ax= plt.subplots(figsize=(5,4))
            try:
              std = poll_std[poll]
              ax.axhline(std, color='grey', linewidth=2, linestyle='--', label='{} ({} mg/l)'.format(poll, std))
@@ -583,15 +583,15 @@ def duration_curve_1(df,poll_list,group_poll_list,poll_std,save_plot):
             ax.plot(data_plot['par'],data_plot[poll],linewidth=2.0, marker='o', fillstyle='none', alpha=0.7, label=str(i))
          
            
-           ax.set_xlabel('percent of samples',size=25)
+           ax.set_xlabel('percent of samples')#,size=25)
            yLabel_unit=yLabel(poll)
-           ax.set_ylabel( yLabel_unit, size=25)
-           ax.tick_params(axis='both', which='major', labelsize=40)
-           ax.tick_params(axis='both', which='minor', labelsize=35) 
+           ax.set_ylabel( yLabel_unit)#, size=25)
+           ax.tick_params(axis='both', which='major')
+           ax.tick_params(axis='both', which='minor')
     
-           ax.legend(title='Sample id', title_fontsize=25, ncol=1, loc='center left', bbox_to_anchor=(1.15, 0.5), fontsize=25, frameon=False)
+           ax.legend(title='', ncol=1, loc='best', fontsize=10, frameon=False)#bbox_to_anchor=(1.0, 0.5)
            
-           fig.savefig(os.path.join(save_plot,'duration_curve','group_poll_'+str(a),poll+'_'+name+'.jpg'), bbox_inches='tight')
+           fig.savefig(os.path.join(save_plot,'duration_curve','group_poll_'+str(a),poll+'_'+name+'.jpg'), bbox_inches='tight', dpi=300)
      
       
    
@@ -605,7 +605,7 @@ def duration_curve_2(df,poll_list,group_poll_list,poll_std,save_plot):
         
          data_poll=df.loc[:,['sample_date','id','id_group','spi_group','group',poll]].reset_index(drop=True)  
          grouped=data_poll.groupby(by='id_group') 
-         fig,ax= plt.subplots(figsize=(22,12))  
+         fig,ax= plt.subplots(figsize=(5,4))
          try:
            std = poll_std[poll]
            ax.axhline(std, color='grey', linewidth=2, linestyle='--', label='{} ({} mg/l)'.format(poll, std))
@@ -619,13 +619,13 @@ def duration_curve_2(df,poll_list,group_poll_list,poll_std,save_plot):
             data_plot= data_plot.assign(n=range(1, len(data_plot) + 1))
             data_plot=data_plot.assign(par=100* (data_plot['n']/max(data_plot['n'])))
             ax.plot(data_plot['par'],data_plot[poll],linewidth=2.0, marker='o', fillstyle='none', alpha=0.7, label=name)
-         ax.set_xlabel('percent of samples',size=25)
+         ax.set_xlabel('Percent of samples (%)')
          yLabel_unit=yLabel(poll)
-         ax.set_ylabel( yLabel_unit, size=25)
-         ax.tick_params(axis='both', which='major', labelsize=40)
-         ax.tick_params(axis='both', which='minor', labelsize=35) 
-         ax.legend(title='Sample id', title_fontsize=25, ncol=1, loc='center left', bbox_to_anchor=(1.15, 0.5), fontsize=25, frameon=False)
-         fig.savefig(os.path.join(save_plot,'duration_curve_2','group_poll_'+str(a),poll+'_'+name+'.jpg'), bbox_inches='tight')
+         ax.set_ylabel( yLabel_unit)
+         ax.tick_params(axis='both', which='major')
+         ax.tick_params(axis='both', which='minor')
+         ax.legend(title='', ncol=1, loc='best', frameon=True, fontsize=11) # bbox_to_anchor=(1, 0.5),
+         fig.savefig(os.path.join(save_plot,'duration_curve_2','group_poll_'+str(a),poll+'_'+name+'.jpg'), bbox_inches='tight', dpi=300)
    
   
              
