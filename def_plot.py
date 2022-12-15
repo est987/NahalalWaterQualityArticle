@@ -221,6 +221,7 @@ def distance_elevation(measurement_data,save_plot):
 def Cumulative_rain_plot(add_rain_data,rain_data,save_plot): 
     # month_rain
     rain_data=rain_data.set_index('date',drop=False)
+    rain_day3=rain_data.groupby(pd.Grouper(freq='D'))['rain_mm'].sum()
     rain_month3=rain_data.groupby(pd.Grouper(freq='M'))['rain_mm'].sum()
 
     ### set daterange
@@ -239,7 +240,7 @@ def Cumulative_rain_plot(add_rain_data,rain_data,save_plot):
     ### FILTER UP to 3rd year
     add_rain_data = add_rain_data.loc[add_rain_data.sample_date<final_date]
     rain_month3 = rain_month3.loc[rain_month3.index <final_date]
-
+    rain_day3=rain_day3.loc[rain_day3.index <final_date]
     def cumulativeRain1():
         #  Cumulative_ rain 1
         fig,ax= plt.subplots(figsize=(52,22))
@@ -396,6 +397,70 @@ def Cumulative_rain_plot(add_rain_data,rain_data,save_plot):
         fig.savefig(os.path.join(save_plot,'rain_plot','Cumulative_rain_month_rain_3.jpg'), bbox_inches='tight', dpi=300)
 
     cumulativeRain3()
+    
+    def cumulativeRain_day():
+        #  Cumulative_ rain 3
+        fig,ax= plt.subplots(figsize=(9,5))
+        #plt.ylim(max(rain_month3), 0)
+        ax2 = ax.twinx()
+
+        ## add top and right border
+        for pos in ['top','right']:
+            ax2.spines[pos].set_visible(True)
+
+        ax2.invert_yaxis()
+        ax2.bar(rain_day3.index,rain_day3, color ='blue', width = 6, alpha=.7)
+        ax2.set_ylabel('Monthly precipitation (mm)', color='blue')#,size=30)
+        ax2.tick_params(axis='y', which='major', labelcolor='blue')#, labelsize=40)
+        ax2.tick_params(axis='both', which='major')#, labelsize=40)
+        ax2.tick_params(axis='both', which='minor')#, labelsize=35)
+        grouped=add_rain_data.groupby(by='HY')
+        for name,group in grouped:
+         print(name)
+         ax.plot(group['sample_date'],group['Cumulative_ rain_2'],'-k',linewidth=2.0)
+         ax.plot(group['sample_date'],group['Cumulative_ rain_2'],'ok',markersize=3)
+        ax.set_xlim(add_rain_data.sample_date.min() - pd.DateOffset(5), add_rain_data.sample_date.max() + pd.DateOffset(5))
+        ax.set_xticks(daterange)
+        ax.axvline(pd.Timestamp('2020-10-16'), color='grey', linewidth=2, linestyle='--')
+        #ax.axvline(pd.Timestamp('2021-10-01'), color='grey', linewidth=2, linestyle='--')
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%y'))
+        ax.set_xlabel('Sample date')#,size=40)
+        ax.set_ylabel('Cumulative precipitation (mm)')#,size=40)
+
+        ax.tick_params(axis='both', which='major')#, labelsize=40)
+        ax.tick_params(axis='both', which='minor')#, labelsize=35)
+        label= nwe_hy[0]
+        ax.annotate(label, # this is the text
+        # (x_lavel_1,100), # this is the point to label
+        (pd.Timestamp('2020-08-01'),100), # this is the point to label
+        textcoords="offset points", # how to position the text
+        xytext=(0,0), # distance from text to points (x,y)
+        ha='center',# horizontal alignment can be left, right or center
+        fontsize=14,
+        color='red')
+        label= nwe_hy[1]
+        ax.annotate(label, # this is the text
+        # (x_lavel_2,100), # this is the point to label
+        (pd.Timestamp('2021-08-01'),100), # this is the point to label
+
+        textcoords="offset points", # how to position the text
+        xytext=(0,0), # distance from text to points (x,y)
+        ha='center',# horizontal alignment can be left, right or center
+        fontsize=14,
+        color='red')
+        # label=nwe_hy[2]
+        # ax.annotate(label, # this is the text
+        # (x_lavel_3,200), # this is the point to label
+        # textcoords="offset points", # how to position the text
+        # xytext=(0,0), # distance from text to points (x,y)
+        # ha='center',# horizontal alignment can be left, right or center
+        # fontsize=14,
+        # color='red')
+
+        fig.savefig(os.path.join(save_plot,'rain_plot','Cumulative_rain_day_rain_3.jpg'), bbox_inches='tight', dpi=300)
+
+    cumulativeRain_day()
+    
     
     
 
