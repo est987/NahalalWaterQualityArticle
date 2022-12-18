@@ -82,7 +82,10 @@ def group_data_mean_id(df, poll_list):
     df_pivot_reindex= df_pivot.reindex(poll_list)
     return df_melt,  df_group, df_pivot,df_pivot_reindex
 
+def open_close_dam_data(data,open_close_date):
+    pass
 
+  
 #  fun to plot 
 def create_new_folder(newpath):
     if not os.path.isdir(newpath):
