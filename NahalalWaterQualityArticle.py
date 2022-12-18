@@ -17,7 +17,7 @@ folder ='data'
 
 # folder ='//fs01/users/matanb/GitHub/NahalalWaterQualityArticle/data'
 df = pd.read_csv(os.path.join(folder,'final_df.csv'), parse_dates=['sample_date'])
-open_dam_datepd=pd.read_csv(os.path.join(folder,'open dam date.csv'))
+open_dam_date=pd.read_csv(os.path.join(folder,'open dam date.csv'),parse_dates=['sample_date'])
 point_measurement_data= pd.read_csv(os.path.join(folder,'point_measurement_data.csv'))
 rain_data=pd.read_excel(os.path.join(folder,'rain_data.xlsx'), sheet_name='rain')
 
@@ -74,13 +74,13 @@ poll_std = {'TN':10,
 #################### add rain data ##############################   
 tick_dates,poll_data_join_rain=add_columns_sum_rain_between_dates(df_13,rain_data)
 #tick_dates=add_columns_sum_rain_between_dates(df_13,rain_data)
-#%%
+
 
 ####### TransformationData  to mean and st##############
 dict_Transformation_df=TransformationData_fun(df_13,poll_list)
 Standard_norm_data_13=dict_Transformation_df['Standard']
 
-#%%
+
 # group data by id and spi index 
 poll_data_join_rain_select_columns=poll_data_join_rain.loc[:,['sample_date','id','spi_group']+poll_list]
 poll_data_join_rain_select_columns['spi_group']=poll_data_join_rain_select_columns['spi_group'].fillna('other')
@@ -99,8 +99,8 @@ poll_data_join_rain_select_columns.insert(3, 'group',group_3)
 setStyle()
 
 #save plot folder 
-# savefolder = '//fs01/users/matanb/GitHub/NahalalWaterQualityArticle/graphs/31102022'
-savefolder = 'graphs'
+savefolder = 'X:/GitHub/NahalalWaterQualityArticle/graphs'
+#savefolder = 'graphs'
 
 #%%
 #1
@@ -128,8 +128,9 @@ duration_curve_1(poll_data_join_rain_select_columns,poll_list,group_poll_list,po
 #5.2
 B=duration_curve_2(poll_data_join_rain_select_columns,poll_list,group_poll_list,poll_std,savefolder)
 
-
-
+#%%
+#6
+open_close_dam_data_boxplot(df_13,open_dam_date,poll_list,savefolder)
 
 
 

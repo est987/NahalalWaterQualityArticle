@@ -82,8 +82,6 @@ def group_data_mean_id(df, poll_list):
     df_pivot_reindex= df_pivot.reindex(poll_list)
     return df_melt,  df_group, df_pivot,df_pivot_reindex
 
-def open_close_dam_data(data,open_close_date):
-    pass
 
   
 #  fun to plot 
@@ -700,6 +698,82 @@ def duration_curve_2(df,poll_list,group_poll_list,poll_std,save_plot):
     return group,data_plot
 
 
+def open_close_dam_data_boxplot(data,open_close_date,poll_list,save_plot):
+    #join open dem
+    data=data.merge(open_close_date,on='sample_date')
+    data=data.loc[data['open_dam']!='no_data',:]
+    data_ID8=data.loc[data['id']==8,:]
+    data_ID10=data.loc[data['id']==10,:]
+    data_ID11=data.loc[data['id']==11,:]
+    flierprops = dict(marker='v', markerfacecolor='r', markersize=12,
+                  linestyle='none', markeredgecolor='r')
+    for data,ID_point in zip([data_ID8,data_ID10, data_ID11],['ID8','1D10','ID11']):
+       for poll in poll_list:  
+         fig1,ax1= plt.subplots(figsize=(10,8))
+         fig2,ax2= plt.subplots(figsize=(10,8))
+         fig3,ax3= plt.subplots(figsize=(10,8))
+      
+      
+         a1=sns.boxplot(x="open_dam", y=poll,data= data,color='cyan',flierprops=flierprops,ax=ax1) #,hue='season'
+         #a1.set(yticklabels=[])  
+         #g2.set(title='Penguins: Body Mass by Species for Gender')
+         a1.set(ylabel=None)  # remove the y-axis label
+         #a1.tick_params(left=False)  # remove the ticks
+         sns.swarmplot(x="open_dam", y=poll,data= data,color=".25",ax=ax1)
+      
+         a2=sns.violinplot(x="open_dam", y=poll,data= data, inner=None,ax=ax2)
+         #a2.set(yticklabels=[])  
+         #g2.set(title='Penguins: Body Mass by Species for Gender')
+         a2.set(ylabel=None)  # remove the y-axis label
+         #a2.tick_params(left=False)  # remove the ticks
+      
+         a3=sns.boxenplot(x="open_dam", y=poll,data= data,ax=ax3)
+         #a3.set(yticklabels=[])  
+         #g2.set(title='Penguins: Body Mass by Species for Gender')
+         a3.set(ylabel=None)  # remove the y-axis label
+         #a3.tick_params(left=False)  # remove the ticks
+      
+    
+      
+        
+         #ax1.set_xlabel('sample_date',size=15)
+         #ax2.set_xlabel('sample_date',size=15)
+         #ax3.set_xlabel('sample_date',size=15)
+         yLabel_unit=yLabel(poll)
+         ax1.set_ylabel( yLabel_unit, size=15)
+         ax2.set_ylabel( yLabel_unit, size=15)
+         ax3.set_ylabel( yLabel_unit, size=15)
+     
+         #ax1.tick_params(axis='x', which='major',labelrotation=90, labelsize=30)
+         #ax1.tick_params(axis='x', which='minor',labelrotation=90, labelsize=25)
+         #ax2.tick_params(axis='x', which='major',labelrotation=90,labelsize=30)
+         #ax2.tick_params(axis='x', which='minor',labelrotation=90, labelsize=25)
+         #ax3.tick_params(axis='x', which='major',labelrotation=90, labelsize=30)
+         #ax3.tick_params(axis='x', which='minor',labelrotation=90, labelsize=25)
+         #ax1.tick_params(axis='y', which='major', labelsize=30)
+         #ax1.tick_params(axis='y', which='minor', labelsize=25)
+         #ax2.tick_params(axis='y', which='major',labelsize=30)
+         #ax2.tick_params(axis='y', which='minor', labelsize=25)
+         #ax3.tick_params(axis='y', which='major', labelsize=30)
+         #ax3.tick_params(axis='y', which='minor', labelsize=25)
+         ax1.grid()
+   
+      
+      
+         ##savefig
+         create_new_folder(os.path.join(save_plot,'boxplot_open_dam',ID_point))
+         #create_new_folder(os.path.join(save_plot,'boxplot_open_dam','violinplot_2'))
+         #create_new_folder(os.path.join(save_plot,'boxplot_open_dam','boxenplot_2'))
+      
+         saveloc='{}.jpg'.format(poll)
+         fig1.savefig(os.path.join(save_plot,'boxplot_open_dam',ID_point,saveloc), bbox_inches='tight',dpi=300)
+         #fig2.savefig(os.path.join(save_plot,'boxplot_open_dam','violinplot_2',saveloc), bbox_inches='tight',dpi=300)
+         #fig3.savefig(os.path.join(save_plot,'boxplot_open_dam','boxenplot_2',saveloc), bbox_inches='tight',dpi=300)
 
+
+       
+    
+    
+    return data_ID8,data_ID10,data_ID11
 
 
