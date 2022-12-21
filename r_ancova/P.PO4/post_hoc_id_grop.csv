@@ -1,0 +1,4 @@
+"term",".y.","group1","group2","df","statistic","p","p.adj","p.adj.signif"
+"id_grop","poll","Downstream","Middlestream",350,-0.643112424200899,0.520572258858841,1,"ns"
+"id_grop","poll","Downstream","Upstream",350,1.80890171150236,0.0713242315035786,0.213972694510736,"ns"
+"id_grop","poll","Middlestream","Upstream",350,2.46267874181124,0.0142713032145613,0.0428139096436838,"*"

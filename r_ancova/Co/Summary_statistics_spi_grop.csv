@@ -1,0 +1,5 @@
+"spi_grop","variable","n","min","max","median","iqr","mean","sd","se","ci","later_grop"
+"dry2dry5","poll",47,0,0.001,0,0,0,0,0,0,"a"
+"dry2wet5","poll",36,0,0.007,0,0,0,0.001,0,0,"ab"
+"other","poll",99,0,0.003,0,0.001,0.001,0.001,0,0,"ab"
+"wet2wet5","poll",43,0,0.004,0,0.001,0.001,0.001,0,0,"b"

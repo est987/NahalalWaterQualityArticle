@@ -1,0 +1,7 @@
+"term",".y.","group1","group2","df","statistic","p","p.adj","p.adj.signif"
+"spi_grop","poll","dry2dry5","dry2wet5",221,-1.63671620990544,0.1031129822312,0.618677893387198,"ns"
+"spi_grop","poll","dry2dry5","other",221,-0.854409489015667,0.393803362433139,1,"ns"
+"spi_grop","poll","dry2dry5","wet2wet5",221,-0.477740547783228,0.633307054266286,1,"ns"
+"spi_grop","poll","dry2wet5","other",221,1.08493809448323,0.279131167683052,1,"ns"
+"spi_grop","poll","dry2wet5","wet2wet5",221,1.15838970835085,0.247955280996356,1,"ns"
+"spi_grop","poll","other","wet2wet5",221,0.276675373294727,0.782287971033729,1,"ns"

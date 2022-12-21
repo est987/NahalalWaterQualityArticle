@@ -1,0 +1,4 @@
+"id_grop","variable","n","min","max","median","iqr","mean","sd","se","ci","later_grop"
+"Downstream","poll",76,0,0.009,0.002,0.002,0.003,0.002,0,0,"a"
+"Middlestream","poll",96,0,0.011,0.002,0.003,0.002,0.002,0,0,"a"
+"Upstream","poll",53,0,0.008,0,0.002,0.001,0.002,0,0.001,"b"
