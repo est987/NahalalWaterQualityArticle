@@ -5,22 +5,10 @@ import os, pandas as pd, numpy as np, geopandas as gpd
 
 ### set workinf directory 9
 
-fp='//fs01/users/matanb/GitHub/NahalalWaterQualityArticle'
-os.chdir(fp)
-print(os.getcwd())
+# fp='//fs01/users/matanb/GitHub/NahalalWaterQualityArticle'
+# os.chdir(fp)
+# print(os.getcwd())
 # import the fun to create the plot
-from def_plot import *
-from helperMethods import setStyle
-################   get the data  #################
-
-folder ='data'
-
-# folder ='//fs01/users/matanb/GitHub/NahalalWaterQualityArticle/data'
-df = pd.read_csv(os.path.join(folder,'final_df.csv'), parse_dates=['sample_date'])
-open_dam_date=pd.read_csv(os.path.join(folder,'open dam date.csv'),parse_dates=['sample_date'])
-point_measurement_data= pd.read_csv(os.path.join(folder,'point_measurement_data.csv'))
-rain_data=pd.read_excel(os.path.join(folder,'rain_data.xlsx'), sheet_name='rain')
-
 
 #sample_date_seasonrain=pd.read_excel(os.path.join(folder,'sample_date.xlsx'), sheet_name='sample_date')
 #%%
@@ -99,8 +87,8 @@ poll_data_join_rain_select_columns.insert(3, 'group',group_3)
 setStyle()
 
 #save plot folder 
-savefolder = 'X:/GitHub/NahalalWaterQualityArticle/graphs'
-#savefolder = 'graphs'
+# savefolder = 'X:/GitHub/NahalalWaterQualityArticle/graphs'
+savefolder = 'graphs'
 
 #%%
 #1

@@ -612,9 +612,6 @@ def group_plot(group_data,poll_list,group_poll_list,save_plot):
 
 
 
-
-
-
 # duration_curve (standard)
 def duration_curve_1(df,poll_list,group_poll_list,poll_std,save_plot):
    
@@ -658,8 +655,6 @@ def duration_curve_1(df,poll_list,group_poll_list,poll_std,save_plot):
            ax.legend(title='', ncol=1, loc='best', fontsize=10, frameon=False)#bbox_to_anchor=(1.0, 0.5)
            
            fig.savefig(os.path.join(save_plot,'duration_curve','group_poll_'+str(a),poll+'_'+name+'.jpg'), bbox_inches='tight', dpi=300)
-     
-      
    
 def duration_curve_2(df,poll_list,group_poll_list,poll_std,save_plot):
     a=0
