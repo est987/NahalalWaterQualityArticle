@@ -1,0 +1,19 @@
+,element,F value,Pr(>F)
+stream_section          ,Cl,45.72789996,1.10E-16
+spi_group               ,Cl,36.23932946,6.97E-14
+stream_section:spi_group,Cl,2.978856058,0.020667917
+stream_section,EC,21.2802691,5.40E-09
+spi_group ,EC,41.97233769,1.33E-15
+stream_section:spi_group,EC,1.627383517,0.169433316
+stream_section,N-NH4,26.91895679,6.52E-11
+spi_group ,N-NH4,0.090318902,0.913682582
+stream_section:spi_group,N-NH4,0.585706257,0.673402895
+stream_section,N-NO2,39.34254297,8.00E-15
+spi_group ,N-NO2,3.22071124,0.042318624
+stream_section:spi_group,N-NO2,1.439291358,0.223002363
+stream_section ,N-NO3,81.322121,1.16E-25
+spi_group,N-NO3,16.12553431,3.76E-07
+stream_section:spi_group,N-NO3,2.435109829,0.049101194
+stream_section,P-PO4,20.40643935,1.09E-08
+spi_group,P-PO4,5.905681654,0.003299872
+stream_section:spi_group,P-PO4,1.23984908,0.295816034
