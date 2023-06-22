@@ -127,7 +127,7 @@ def analysisByStreamSection(df, savefolder, poll_list):
 
     # .legend(handles=handles, labels=labels, title='')
     p.add_legend(dict(zip(labels, handles)), title='')
-    plt.subplots_adjust( wspace=0.25)
+    plt.subplots_adjust(wspace=0.25)
 
     p.savefig(f'{savefolder}concentration_by_stream_section.jpeg', bbox_inches='tight', dpi=300)
 
@@ -197,8 +197,7 @@ def bySectionSPI(df, poll_list, savefolder):
 data_poll = df.loc[df.id.isin([1,3]), data_cols + poll_list].reset_index(drop=True)
 data_piv = pd.pivot_table(data_poll, index='sample_date', columns = 'id', values=poll_list).dropna()
 
-p='N-NO3'
-p='P-PO4'
+
 for p in poll_list:
     print(p)
     p_piv = data_piv[p]
